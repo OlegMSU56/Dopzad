@@ -7,6 +7,9 @@ class User:
         self.password = hash(password)
         self.age = age
 
+    def __str__(self):
+        return self.nickname
+
 
 class Video:
     def __init__(self, title, duration, adult_mode=False):
@@ -15,6 +18,12 @@ class Video:
         self.time_now = 0
         self.adult_mode = adult_mode
 
+    def __eq__(self, other):
+        return self.title == other.title
+
+    def __contains__(self, title):
+        return title in self.title
+
 
 class UrTube:
     def __init__(self):
@@ -22,12 +31,12 @@ class UrTube:
         self.videos = []
         self.current_user = None
 
-    def log_in(self, nickname, password):
+    def log_in(self, nickname, password):#Не совсем понимаю где именно ошибка
         for user in self.users:
             if user.nickname == nickname and user.password == hash(password):
                 self.current_user = user
                 print(f"Пользователь {nickname} вошел в систему.")
-            return
+                return
 
     def register(self, nickname, password, age):
         for user in self.users:
@@ -39,12 +48,17 @@ class UrTube:
         self.current_user = new_user
         print(f"Пользователь {nickname} зарегистрирован и вошел в систему.")
 
+    def __str__(self): #Не совсем понимаю как его использовать
+        return self.current_user
+
     def log_out(self):
         self.current_user = None
         print("Выход из системы выполнен.")
 
     def add(self, *args):
-        self.videos += [*args]
+        for video in args:
+            if video not in self.videos:
+                self.videos.append(video)
 
 
     def get_videos(self, search_word):
@@ -78,10 +92,11 @@ class UrTube:
         while my_video.time_now < my_video.duration:
             print(f"Секунда воспроизведения: {my_video.time_now}")
             my_video.time_now += 1
-            time.sleep(1)
+            time.sleep(0.4)
 
         print("Конец видео.")
         my_video.time_now = 0
+
 
 
 ur = UrTube()
